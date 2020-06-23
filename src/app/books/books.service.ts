@@ -10,7 +10,8 @@ export class BooksService {
         'Maleš',
         'Jure Maleš',
         new Date('1987-11-23'),
-        '1234'
+        '1234',
+        []
       ),
       new Author(
         2,
@@ -18,7 +19,8 @@ export class BooksService {
         'Antolić',
         'Nikolina Antolić',
         new Date('1991-11-15'),
-        '5678'
+        '5678',
+        []
       ),
     ]),
     new Book(2, '5678', 'Druga knjiga', [
@@ -28,7 +30,8 @@ export class BooksService {
         'Antolić',
         'Nikolina Antolić',
         new Date('1991-11-15'),
-        '5678'
+        '5678',
+        []
       ),
     ]),
   ];

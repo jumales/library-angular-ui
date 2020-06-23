@@ -1,3 +1,4 @@
+import { Book } from '../../books/book/book';
 export class Author {
   constructor(
     private _id: Number,
@@ -5,7 +6,8 @@ export class Author {
     private _lastName: String,
     private _fullName: String,
     private _dayOfBirth: Date,
-    private _oib: String
+    private _oib: String,
+    private _books: Book[]
   ) {}
 
   get id() {
@@ -49,5 +51,13 @@ export class Author {
 
   set dayOfBirth(value: Date) {
     this._dayOfBirth = value;
+  }
+
+  get books() {
+    return this._books;
+  }
+
+  set books(value: Book[]) {
+    this._books = value;
   }
 }

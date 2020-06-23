@@ -1,0 +1,56 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>First name</th>
+      <th>Last name</th>
+      <th>Oib</th>
+      <th>Day of birth</th>
+      <th>Books</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let author of authors">
+      <td>{{ author.id }}</td>
+      <td>{{ author.firstName }}</td>
+      <td>{{ author.lastName }}</td>
+      <td>{{ author.oib }}</td>
+      <td>{{ author.dayOfBirth | date: "yyyy-MM-dd" }}</td>
+      <td>
+        <table table table-striped>
+          <thead></thead>
+          <tbody>
+            <tr *ngFor="let book of author.books">
+              <td>{{ book.ibn }}</td>
+              <td>{{ book.title }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+      <td>
+        <button
+          type="button"
+          class="btn btn-warning"
+          (click)="openEditModal(author)"
+        >
+          Edit
+        </button>
+      </td>
+      <td>
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="openDeleteModal(author)"
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<button type="button" class="btn btn-primary" (click)="openCreateModal()">
+  Add new author
+</button>
