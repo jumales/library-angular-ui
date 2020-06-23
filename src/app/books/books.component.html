@@ -4,6 +4,7 @@
       <th>#</th>
       <th>IBN</th>
       <th>Title</th>
+      <th>Authors</th>
       <th></th>
       <th></th>
     </tr>
@@ -13,6 +14,25 @@
       <td>{{ book.id }}</td>
       <td>{{ book.ibn }}</td>
       <td>{{ book.title }}</td>
+      <td>
+        <table table table-striped>
+          <thead></thead>
+          <tbody>
+            <tr *ngFor="let author of book.authors">
+              <td>{{ author.fullName }}</td>
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="openRemoveAuthorModal(book, author)"
+                >
+                  Remove author from book
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
       <td>
         <button
           type="button"

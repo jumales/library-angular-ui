@@ -4,6 +4,7 @@ import { BooksService } from './books.service';
 import { Book } from './book/book';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BookEditorComponent } from './book-editor/book-editor.component';
+import { Author } from '../authors/author/author';
 
 @Component({
   selector: 'books',
@@ -27,12 +28,16 @@ export class BooksComponent {
     return this._books;
   }
 
-  openDeleteModal(book: Book) {
+  openRemoveModal(args) {
     const modalRef = this.modalService.open(AlertDialogComponent);
     modalRef.result
       .then((result) => {
         if (result === 'OK') {
-          this.booksService.delete(book);
+          if (args.length === 2) {
+            this.booksService.removeAuthorFromBook(args[0], args[1]);
+          } else if (args.length === 1) {
+            this.booksService.delete(args[0]);
+          }
           this.getBooks();
         }
       })
@@ -41,9 +46,22 @@ export class BooksComponent {
       });
   }
 
+  openRemoveAuthorModal(book: Book, author: Author) {
+    this.openRemoveModal([book, author]);
+  }
+
+  openDeleteModal(book: Book) {
+    this.openRemoveModal([book]);
+  }
+
   openEditModal(book: Book) {
     const modalRef = this.modalService.open(BookEditorComponent);
-    modalRef.componentInstance.book = new Book(book.id, book.ibn, book.title);
+    modalRef.componentInstance.book = new Book(
+      book.id,
+      book.ibn,
+      book.title,
+      book.authors
+    );
     modalRef.result
       .then((result) => {
         if (result.action === 'OK') {
@@ -58,7 +76,7 @@ export class BooksComponent {
 
   openCreateModal() {
     const modalRef = this.modalService.open(BookEditorComponent);
-    modalRef.componentInstance.book = new Book(null, null, null);
+    modalRef.componentInstance.book = new Book(null, null, null, []);
     modalRef.result
       .then((result) => {
         if (result.action === 'OK') {
