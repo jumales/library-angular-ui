@@ -1,4 +1,4 @@
-import { Book } from '../book/book';
+import { Book } from '../books/book/book';
 
 export class BooksService {
   getBooks() {

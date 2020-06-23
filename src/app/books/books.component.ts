@@ -1,8 +1,9 @@
 import { AlertDialogComponent } from './../alert-dialog/alert-dialog.component';
 import { Component } from '@angular/core';
 import { BooksService } from './books.service';
-import { Book } from '../book/book';
+import { Book } from './book/book';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { BookEditorComponent } from './book-editor/book-editor.component';
 
 @Component({
   selector: 'books',
@@ -26,7 +27,8 @@ export class BooksComponent {
   edit(book: Book) {
     this._books.forEach((b) => {
       if (b.id == book.id) {
-        b = new Book(book.id, book.ibn, book.title);
+        b.ibn = book.ibn;
+        b.title = book.title;
       }
     });
   }
@@ -35,13 +37,28 @@ export class BooksComponent {
     this._books = this._books.filter((b) => b.id != book.id);
   }
 
-  openModal(book: Book) {
+  openDeleteModal(book: Book) {
     const modalRef = this.modalService.open(AlertDialogComponent);
     modalRef.result
       .then((result) => {
         console.log('result', result);
         if (result === 'OK') {
           this.delete(book);
+        }
+      })
+      .catch((e) => {
+        //User canceled nothing to do
+      });
+  }
+
+  openEditModal(book: Book) {
+    const modalRef = this.modalService.open(BookEditorComponent);
+    modalRef.componentInstance.book = new Book(book.id, book.ibn, book.title);
+    modalRef.result
+      .then((result) => {
+        console.log('result', result);
+        if (result.action === 'OK') {
+          this.edit(result.book);
         }
       })
       .catch((e) => {

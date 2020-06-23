@@ -5,6 +5,7 @@
       <th>IBN</th>
       <th>Title</th>
       <th></th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -13,7 +14,20 @@
       <td>{{ book.ibn }}</td>
       <td>{{ book.title }}</td>
       <td>
-        <button type="button" class="btn btn-primary" (click)="openModal(book)">
+        <button
+          type="button"
+          class="btn btn-warning"
+          (click)="openEditModal(book)"
+        >
+          Edit
+        </button>
+      </td>
+      <td>
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="openDeleteModal(book)"
+        >
           Delete
         </button>
       </td>

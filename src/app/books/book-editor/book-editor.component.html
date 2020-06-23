@@ -1,0 +1,31 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">{{ title }}</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('CANCEL')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <span>Ibn</span>
+  <input [(ngModel)]="book.ibn" type="text" placeholder="Set ibn ..." />
+  <span>Title</span>
+  <input [(ngModel)]="book.title" type="text" placeholder="Set title ..." />
+</div>
+
+<div class="buttons">
+  <button
+    class="ok-button"
+    (click)="passOk()"
+    type="submit"
+    class="btn btn-primary w-25 ok-button"
+  >
+    Ok
+  </button>
+  <button (click)="passCancel()" type="submit" class="btn btn-secondary w-25">
+    Cancel
+  </button>
+</div>
