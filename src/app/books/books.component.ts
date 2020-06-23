@@ -21,7 +21,8 @@ export class BooksComponent {
   }
 
   add(book: Book) {
-    this._books.concat(book);
+    book.id = this._books.length + 1;
+    this._books.push(book);
   }
 
   edit(book: Book) {
@@ -59,6 +60,21 @@ export class BooksComponent {
         console.log('result', result);
         if (result.action === 'OK') {
           this.edit(result.book);
+        }
+      })
+      .catch((e) => {
+        //User canceled nothing to do
+      });
+  }
+
+  openCreateModal() {
+    const modalRef = this.modalService.open(BookEditorComponent);
+    modalRef.componentInstance.book = new Book(null, null, null);
+    modalRef.result
+      .then((result) => {
+        console.log('result', result);
+        if (result.action === 'OK') {
+          this.add(result.book);
         }
       })
       .catch((e) => {
