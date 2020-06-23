@@ -1,7 +1,6 @@
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertDialogComponent } from './alert-dialog/alert-dialog.component';
 import { BooksService } from './books/books.service';
-import { BookComponent } from './books/book/book.component';
 import { BooksComponent } from './books/books.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -15,7 +14,6 @@ import { FormsModule } from '@angular/forms';
   declarations: [
     AppComponent,
     BooksComponent,
-    BookComponent,
     AlertDialogComponent,
     BookEditorComponent,
   ],
