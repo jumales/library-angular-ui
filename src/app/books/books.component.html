@@ -1,0 +1,22 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>IBN</th>
+      <th>Title</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let book of books">
+      <td>{{ book.id }}</td>
+      <td>{{ book.ibn }}</td>
+      <td>{{ book.title }}</td>
+      <td>
+        <button type="button" class="btn btn-primary" (click)="openModal(book)">
+          Delete
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
