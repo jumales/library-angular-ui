@@ -31,7 +31,7 @@ export class AuthorsService {
     return this._authors;
   }
 
-  addBook(author: Author) {
+  addAuthor(author: Author) {
     author.id = this._authors.length + 1;
     this._authors.push(author);
   }

@@ -1,8 +1,10 @@
+import { AuthorEditorComponent } from './author-editor/author-editor.component';
 import { AlertDialogComponent } from './../alert-dialog/alert-dialog.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthorsService } from './authors.service';
 import { Component } from '@angular/core';
 import { Author } from './author/author';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'authors',
@@ -14,7 +16,8 @@ export class AuthorsComponent {
 
   constructor(
     public authorsService: AuthorsService,
-    public modalService: NgbModal
+    public modalService: NgbModal,
+    public datePipe: DatePipe
   ) {
     this.getAuthors();
   }
@@ -48,37 +51,57 @@ export class AuthorsComponent {
   }
 
   openEditModal(author: Author) {
-    /*const modalRef = this.modalService.open(BookEditorComponent);
-    modalRef.componentInstance.book = new Book(
-      book.id,
-      book.ibn,
-      book.title,
-      book.authors
+    const modalRef = this.modalService.open(AuthorEditorComponent);
+    modalRef.componentInstance.author = new Author(
+      author.id,
+      author.firstName,
+      author.lastName,
+      author.fullName,
+      author.dayOfBirth,
+      author.oib,
+      author.books
+    );
+    modalRef.componentInstance.author.dayOfBirthFormatted = this.datePipe.transform(
+      author.dayOfBirth,
+      'yyyy-MM-dd'
     );
     modalRef.result
       .then((result) => {
         if (result.action === 'OK') {
-          this.booksService.edit(result.book);
-          this.getBooks();
+          result.author.dayOfBirth = Date.parse(
+            result.author.dayOfBirthFormatted
+          );
+          this.authorsService.edit(result.author);
+          this.getAuthors();
         }
       })
       .catch((e) => {
         //User canceled nothing to do
-      });*/
+      });
   }
 
   openCreateModal() {
-    /*const modalRef = this.modalService.open(BookEditorComponent);
-    modalRef.componentInstance.book = new Book(null, null, null, []);
+    const modalRef = this.modalService.open(AuthorEditorComponent);
+    modalRef.componentInstance.author = new Author(
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      []
+    );
     modalRef.result
       .then((result) => {
         if (result.action === 'OK') {
-          this.booksService.addBook(result.book);
-          this.getBooks();
+          let author = result.author;
+          author.dayOfBirth = Date.parse(author.dayOfBirthFormatted);
+          this.authorsService.addAuthor(author);
+          this.getAuthors();
         }
       })
       .catch((e) => {
         //User canceled nothing to do
-      });*/
+      });
   }
 }

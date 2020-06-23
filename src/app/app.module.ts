@@ -1,3 +1,4 @@
+import { AuthorEditorComponent } from './authors/author-editor/author-editor.component';
 import { AuthorsComponent } from './authors/authors.component';
 import { AuthorsService } from './authors/authors.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -11,6 +12,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BookEditorComponent } from './books/book-editor/book-editor.component';
 import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -19,9 +21,10 @@ import { FormsModule } from '@angular/forms';
     AlertDialogComponent,
     BookEditorComponent,
     AuthorsComponent,
+    AuthorEditorComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
-  providers: [BooksService, NgbModal, AuthorsService],
+  providers: [BooksService, NgbModal, AuthorsService, DatePipe],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

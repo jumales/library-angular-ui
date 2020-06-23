@@ -1,5 +1,7 @@
 import { Book } from '../../books/book/book';
+import { DatePipe } from '@angular/common';
 export class Author {
+  private _dayOfBirthFormatted: String;
   constructor(
     private _id: Number,
     private _firstName: String,
@@ -32,10 +34,7 @@ export class Author {
   }
 
   get fullName() {
-    return this._fullName;
-  }
-  set fullName(value: String) {
-    this._fullName = value;
+    return this._firstName + ' ' + this.lastName;
   }
 
   get oib() {
@@ -59,5 +58,13 @@ export class Author {
 
   set books(value: Book[]) {
     this._books = value;
+  }
+
+  get dayOfBirthFormatted() {
+    return this._dayOfBirthFormatted;
+  }
+
+  set dayOfBirthFormatted(value: String) {
+    this._dayOfBirthFormatted = value;
   }
 }
