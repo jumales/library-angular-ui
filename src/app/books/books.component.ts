@@ -12,39 +12,28 @@ import { BookEditorComponent } from './book-editor/book-editor.component';
 })
 export class BooksComponent {
   private _books: Book[];
-  constructor(booksService: BooksService, public modalService: NgbModal) {
-    this._books = booksService.getBooks();
+  constructor(
+    public booksService: BooksService,
+    public modalService: NgbModal
+  ) {
+    this.getBooks();
+  }
+
+  getBooks() {
+    this._books = this.booksService.books;
   }
 
   get books() {
     return this._books;
   }
 
-  add(book: Book) {
-    book.id = this._books.length + 1;
-    this._books.push(book);
-  }
-
-  edit(book: Book) {
-    this._books.forEach((b) => {
-      if (b.id == book.id) {
-        b.ibn = book.ibn;
-        b.title = book.title;
-      }
-    });
-  }
-
-  delete(book: Book) {
-    this._books = this._books.filter((b) => b.id != book.id);
-  }
-
   openDeleteModal(book: Book) {
     const modalRef = this.modalService.open(AlertDialogComponent);
     modalRef.result
       .then((result) => {
-        console.log('result', result);
         if (result === 'OK') {
-          this.delete(book);
+          this.booksService.delete(book);
+          this.getBooks();
         }
       })
       .catch((e) => {
@@ -57,9 +46,9 @@ export class BooksComponent {
     modalRef.componentInstance.book = new Book(book.id, book.ibn, book.title);
     modalRef.result
       .then((result) => {
-        console.log('result', result);
         if (result.action === 'OK') {
-          this.edit(result.book);
+          this.booksService.edit(result.book);
+          this.getBooks();
         }
       })
       .catch((e) => {
@@ -72,9 +61,9 @@ export class BooksComponent {
     modalRef.componentInstance.book = new Book(null, null, null);
     modalRef.result
       .then((result) => {
-        console.log('result', result);
         if (result.action === 'OK') {
-          this.add(result.book);
+          this.booksService.addBook(result.book);
+          this.getBooks();
         }
       })
       .catch((e) => {
