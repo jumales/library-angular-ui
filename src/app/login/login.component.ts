@@ -1,11 +1,12 @@
 import { LoginData } from './loginData';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Injectable } from '@angular/core';
 @Component({
   selector: 'login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
+@Injectable()
 export class LoginComponent implements OnInit {
   title: String;
   @Input() private _loginData: LoginData = { username: '', password: '' };

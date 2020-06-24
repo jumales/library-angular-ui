@@ -1,25 +1,35 @@
 import { AlertDialogComponent } from './../alert-dialog/alert-dialog.component';
-import { Component } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { BooksService } from './books.service';
 import { Book } from './book/book';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BookEditorComponent } from './book-editor/book-editor.component';
 import { Author } from '../authors/author/author';
+import { StorageService, LOCAL_STORAGE } from 'ngx-webstorage-service';
 
 @Component({
   selector: 'books',
   templateUrl: './books.component.html',
   styleUrls: ['./books.component.css'],
 })
-export class BooksComponent {
+export class BooksComponent implements OnInit {
   private _books: any;
+  isAdmin: boolean;
+  isLogged: boolean;
+  navigationSubscription: any;
   constructor(
     public booksService: BooksService,
-    public modalService: NgbModal
+    public modalService: NgbModal,
+    @Inject(LOCAL_STORAGE) private storage: StorageService
   ) {
+    let token = this.storage.get('IS_ADMIN');
+    this.isAdmin = token === 'true';
+    this.isLogged = token !== undefined;
     this.getBooks();
   }
-  //https://www.positronx.io/angular-7-httpclient-http-service/
+
+  ngOnInit() {}
+
   getBooks() {
     this.booksService.getBooks().subscribe((data: {}) => {
       this._books = data;
@@ -36,11 +46,24 @@ export class BooksComponent {
       .then((result) => {
         if (result === 'OK') {
           if (args.length === 2) {
-            this.booksService.removeAuthorFromBook(args[0], args[1]);
+            this.booksService
+              .removeAuthorFromBook(args[0], args[1])
+              .subscribe((result: any) => {
+                if (result.status.code === 200) {
+                  this.getBooks();
+                } else {
+                  //do error handling
+                }
+              });
           } else if (args.length === 1) {
-            this.booksService.delete(args[0]);
+            this.booksService.delete(args[0]).subscribe((result: any) => {
+              if (result.status.code === 200) {
+                this.getBooks();
+              } else {
+                //do error handling
+              }
+            });
           }
-          this.getBooks();
         }
       })
       .catch((e) => {
@@ -67,8 +90,13 @@ export class BooksComponent {
     modalRef.result
       .then((result) => {
         if (result.action === 'OK') {
-          this.booksService.edit(result.book);
-          this.getBooks();
+          this.booksService.edit(result.book).subscribe((result: any) => {
+            if (result.status.code === 200) {
+              this.getBooks();
+            } else {
+              //do error handling
+            }
+          });
         }
       })
       .catch((e) => {
@@ -82,8 +110,13 @@ export class BooksComponent {
     modalRef.result
       .then((result) => {
         if (result.action === 'OK') {
-          this.booksService.addBook(result.book);
-          this.getBooks();
+          this.booksService.addBook(result.book).subscribe((result: any) => {
+            if (result.status.code === 201) {
+              this.getBooks();
+            } else {
+              //do error handling
+            }
+          });
         }
       })
       .catch((e) => {

@@ -4,21 +4,22 @@ import { Author } from '../authors/author/author';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, OnInit } from '@angular/core';
+import { StorageService, LOCAL_STORAGE } from 'ngx-webstorage-service';
 
 @Injectable()
-export class BooksService {
+export class BooksService implements OnInit {
   _books: any = [];
 
   API_URL = environment.apiUrl;
+  //httpOptions = {};
 
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-    }),
-  };
+  constructor(
+    private http: HttpClient,
+    @Inject(LOCAL_STORAGE) private storage: StorageService
+  ) {}
 
-  constructor(private http: HttpClient) {}
+  ngOnInit() {}
 
   get books() {
     return this._books;
@@ -34,30 +35,55 @@ export class BooksService {
       .pipe(retry(1), catchError(this.handleError));
   }
 
-  addBook(book: Book) {
-    book.id = this._books.length + 1;
-    this._books.push(book);
+  getHeader() {
+    return {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + this.storage.get(environment.TOKEN_KEY),
+      }),
+    };
+  }
+
+  addBook(book: Book): Observable<any> {
+    let _book = { id: book.id, ibn: book.ibn, title: book.title };
+    return this.http
+      .post(this.API_URL + 'books', JSON.stringify(_book), this.getHeader())
+      .pipe(catchError(this.handleError));
   }
 
   edit(book: Book) {
-    this._books.forEach((b) => {
-      if (b.id == book.id) {
-        b.ibn = book.ibn;
-        b.title = book.title;
-      }
-    });
+    let _book = { id: book.id, ibn: book.ibn, title: book.title };
+    return this.http
+      .put(this.API_URL + 'books', JSON.stringify(_book), this.getHeader())
+      .pipe(catchError(this.handleError));
   }
 
   delete(book: Book) {
-    this._books = this._books.filter((b) => b.id != book.id);
+    let _book = { id: book.id, ibn: book.ibn, title: book.title };
+    let options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + this.storage.get(environment.TOKEN_KEY),
+      }),
+      body: _book,
+    };
+    return this.http
+      .delete(this.API_URL + 'books', options)
+      .pipe(catchError(this.handleError));
   }
 
   removeAuthorFromBook(book: Book, author: Author) {
-    this._books.forEach((b) => {
-      if (b.id == book.id) {
-        b.authors = b.authors.filter((a) => a.id !== author.id);
-      }
-    });
+    let _bookAuthor = { bookId: book.id, authorId: author.id };
+    let options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + this.storage.get(environment.TOKEN_KEY),
+      }),
+      body: _bookAuthor,
+    };
+    return this.http
+      .delete(this.API_URL + 'books/deleteAuthorFromBook', options)
+      .pipe(catchError(this.handleError));
   }
 
   handleError(error) {

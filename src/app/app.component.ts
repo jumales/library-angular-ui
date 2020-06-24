@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { environment } from './../environments/environment';
 import { LoginData } from './login/loginData';
 import { LoginComponent } from './login/login.component';
@@ -5,7 +6,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoginService } from './login/login.service';
 import { Component, Inject, OnInit } from '@angular/core';
 import { StorageService, LOCAL_STORAGE } from 'ngx-webstorage-service';
-import { resolveSanitizationFn } from '@angular/compiler/src/render3/view/template';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +13,6 @@ import { resolveSanitizationFn } from '@angular/compiler/src/render3/view/templa
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  //https://medium.com/@tiagovalverde/how-to-save-your-app-state-in-localstorage-with-angular-ce3f49362e31
   title = 'library';
   loggedUser = null;
   navbarOpen = false;
@@ -21,7 +20,8 @@ export class AppComponent implements OnInit {
   constructor(
     public loginService: LoginService,
     public modalService: NgbModal,
-    @Inject(LOCAL_STORAGE) private storage: StorageService
+    @Inject(LOCAL_STORAGE) private storage: StorageService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -69,6 +69,15 @@ export class AppComponent implements OnInit {
             this.storage.set(environment.IS_ADMIN_KEY, 'true');
           }
         });
+        this.refresh();
+      });
+  }
+
+  refresh() {
+    this.router
+      .navigateByUrl('/RefreshComponent', { skipLocationChange: true })
+      .then(() => {
+        this.router.navigate(['books']);
       });
   }
 
@@ -77,5 +86,7 @@ export class AppComponent implements OnInit {
     this.storage.remove(environment.TOKEN_KEY);
     this.storage.remove(environment.IS_ADMIN_KEY);
     this.loggedUser = null;
+
+    this.refresh();
   }
 }
