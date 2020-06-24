@@ -16,7 +16,6 @@ export class BooksComponent implements OnInit {
   private _books: any;
   isAdmin: boolean;
   isLogged: boolean;
-  navigationSubscription: any;
   constructor(
     public booksService: BooksService,
     public modalService: NgbModal,

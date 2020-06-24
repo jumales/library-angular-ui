@@ -12,7 +12,6 @@ export class BooksService implements OnInit {
   _books: any = [];
 
   API_URL = environment.apiUrl;
-  //httpOptions = {};
 
   constructor(
     private http: HttpClient,

@@ -34,6 +34,7 @@
           type="button"
           class="btn btn-warning"
           (click)="openEditModal(author)"
+          *ngIf="isLogged"
         >
           Edit
         </button>
@@ -43,6 +44,7 @@
           type="button"
           class="btn btn-danger"
           (click)="openDeleteModal(author)"
+          *ngIf="isAdmin"
         >
           Delete
         </button>
@@ -51,6 +53,11 @@
   </tbody>
 </table>
 
-<button type="button" class="btn btn-primary" (click)="openCreateModal()">
+<button
+  type="button"
+  class="btn btn-primary"
+  (click)="openCreateModal()"
+  *ngIf="isLogged"
+>
   Add new author
 </button>

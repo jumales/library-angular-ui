@@ -1,53 +1,97 @@
-import { Book } from '../books/book/book';
+import { environment } from './../../environments/environment.prod';
 import { Author } from './author/author';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
+import { Injectable, Inject } from '@angular/core';
+import { StorageService, LOCAL_STORAGE } from 'ngx-webstorage-service';
 
+@Injectable()
 export class AuthorsService {
-  _authors: Author[] = [
-    new Author(
-      1,
-      'Jure',
-      'Maleš',
-      'Jure Maleš',
-      new Date('1987-11-23'),
-      '1234',
-      [new Book(1, '1234', 'Prva knjiga', [])]
-    ),
-    new Author(
-      2,
-      'Nikolina',
-      'Antolić',
-      'Nikolina Antolić',
-      new Date('1991-11-15'),
-      '5678',
-      [
-        new Book(1, '1234', 'Prva knjiga', []),
-        new Book(2, '5678', 'Druga knjiga', []),
-        new Book(3, '0000', 'Treca knjiga', []),
-      ]
-    ),
-  ];
+  _authors: any = [];
+
+  API_URL = environment.apiUrl;
+
+  constructor(
+    private http: HttpClient,
+    @Inject(LOCAL_STORAGE) private storage: StorageService
+  ) {}
 
   get authors() {
     return this._authors;
   }
 
+  getAuthors(): Observable<Author> {
+    return this.http
+      .get<Author>(this.API_URL + 'authors')
+      .pipe(retry(1), catchError(this.handleError));
+  }
+
+  getHeader() {
+    return {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + this.storage.get(environment.TOKEN_KEY),
+      }),
+    };
+  }
+
   addAuthor(author: Author) {
-    author.id = this._authors.length + 1;
-    this._authors.push(author);
+    let _author = {
+      id: author.id,
+      firstName: author.firstName,
+      lastName: author.lastName,
+      dayOfBirth: author.dayOfBirthFormatted,
+      oib: author.oib,
+    };
+    return this.http
+      .post(this.API_URL + 'authors', JSON.stringify(_author), this.getHeader())
+      .pipe(catchError(this.handleError));
   }
 
   edit(author: Author) {
-    this._authors.forEach((a) => {
-      if (a.id == author.id) {
-        a.dayOfBirth = author.dayOfBirth;
-        a.firstName = author.firstName;
-        a.lastName = author.lastName;
-        a.oib = author.oib;
-      }
-    });
+    let _author = {
+      id: author.id,
+      firstName: author.firstName,
+      lastName: author.lastName,
+      dayOfBirth: author.dayOfBirthFormatted,
+      oib: author.oib,
+    };
+    return this.http
+      .put(this.API_URL + 'authors', JSON.stringify(_author), this.getHeader())
+      .pipe(catchError(this.handleError));
   }
 
   delete(author: Author) {
-    this._authors = this._authors.filter((a) => a.id != author.id);
+    let _author = {
+      id: author.id,
+      firstName: author.firstName,
+      lastName: author.lastName,
+      dayOfBirth: author.dayOfBirthFormatted,
+      oib: author.oib,
+    };
+    let options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + this.storage.get(environment.TOKEN_KEY),
+      }),
+      body: _author,
+    };
+    return this.http
+      .delete(this.API_URL + 'authors', options)
+      .pipe(catchError(this.handleError));
+  }
+
+  handleError(error) {
+    let errorMessage = '';
+    if (error.error instanceof ErrorEvent) {
+      // Get client-side error
+      errorMessage = error.error.message;
+    } else {
+      // Get server-side error
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    window.alert(errorMessage);
+    return throwError(errorMessage);
   }
 }

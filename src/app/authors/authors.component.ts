@@ -2,9 +2,10 @@ import { AuthorEditorComponent } from './author-editor/author-editor.component';
 import { AlertDialogComponent } from './../alert-dialog/alert-dialog.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthorsService } from './authors.service';
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { Author } from './author/author';
 import { DatePipe } from '@angular/common';
+import { StorageService, LOCAL_STORAGE } from 'ngx-webstorage-service';
 
 @Component({
   selector: 'authors',
@@ -12,18 +13,26 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./authors.component.css'],
 })
 export class AuthorsComponent {
-  private _authors: Author[];
+  private _authors: any;
+  isAdmin: boolean;
+  isLogged: boolean;
 
   constructor(
     public authorsService: AuthorsService,
     public modalService: NgbModal,
-    public datePipe: DatePipe
+    public datePipe: DatePipe,
+    @Inject(LOCAL_STORAGE) private storage: StorageService
   ) {
+    let token = this.storage.get('IS_ADMIN');
+    this.isAdmin = token === 'true';
+    this.isLogged = token !== undefined;
     this.getAuthors();
   }
 
   getAuthors() {
-    this._authors = this.authorsService.authors;
+    this.authorsService.getAuthors().subscribe((data: {}) => {
+      this._authors = data;
+    });
   }
 
   get authors() {
@@ -36,9 +45,14 @@ export class AuthorsComponent {
       .then((result) => {
         if (result === 'OK') {
           if (args.length === 1) {
-            this.authorsService.delete(args[0]);
+            this.authorsService.delete(args[0]).subscribe((result: any) => {
+              if (result.status.code === 200) {
+                this.getAuthors();
+              } else {
+                //do error handling
+              }
+            });
           }
-          this.getAuthors();
         }
       })
       .catch((e) => {
@@ -71,8 +85,13 @@ export class AuthorsComponent {
           result.author.dayOfBirth = Date.parse(
             result.author.dayOfBirthFormatted
           );
-          this.authorsService.edit(result.author);
-          this.getAuthors();
+          this.authorsService.edit(result.author).subscribe((result: any) => {
+            if (result.status.code === 200) {
+              this.getAuthors();
+            } else {
+              //do error handling
+            }
+          });
         }
       })
       .catch((e) => {
@@ -96,8 +115,13 @@ export class AuthorsComponent {
         if (result.action === 'OK') {
           let author = result.author;
           author.dayOfBirth = Date.parse(author.dayOfBirthFormatted);
-          this.authorsService.addAuthor(author);
-          this.getAuthors();
+          this.authorsService.addAuthor(author).subscribe((result: any) => {
+            if (result.status.code === 200) {
+              this.getAuthors();
+            } else {
+              //do error handling
+            }
+          });
         }
       })
       .catch((e) => {
