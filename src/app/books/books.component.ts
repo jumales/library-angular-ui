@@ -12,16 +12,18 @@ import { Author } from '../authors/author/author';
   styleUrls: ['./books.component.css'],
 })
 export class BooksComponent {
-  private _books: Book[];
+  private _books: any;
   constructor(
     public booksService: BooksService,
     public modalService: NgbModal
   ) {
     this.getBooks();
   }
-
+  //https://www.positronx.io/angular-7-httpclient-http-service/
   getBooks() {
-    this._books = this.booksService.books;
+    this.booksService.getBooks().subscribe((data: {}) => {
+      this._books = data;
+    });
   }
 
   get books() {

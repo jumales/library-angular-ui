@@ -1,43 +1,37 @@
+import { environment } from './../../environments/environment.prod';
 import { Book } from '../books/book/book';
 import { Author } from '../authors/author/author';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class BooksService {
-  _books: Book[] = [
-    new Book(1, '1234', 'Prva knjiga', [
-      new Author(
-        1,
-        'Jure',
-        'Maleš',
-        'Jure Maleš',
-        new Date('1987-11-23'),
-        '1234',
-        []
-      ),
-      new Author(
-        2,
-        'Nikolina',
-        'Antolić',
-        'Nikolina Antolić',
-        new Date('1991-11-15'),
-        '5678',
-        []
-      ),
-    ]),
-    new Book(2, '5678', 'Druga knjiga', [
-      new Author(
-        1,
-        'Nikolina',
-        'Antolić',
-        'Nikolina Antolić',
-        new Date('1991-11-15'),
-        '5678',
-        []
-      ),
-    ]),
-  ];
+  _books: any = [];
+
+  API_URL = environment.apiUrl;
+
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+    }),
+  };
+
+  constructor(private http: HttpClient) {}
 
   get books() {
     return this._books;
+  }
+
+  set books(value) {
+    this._books = value;
+  }
+
+  getBooks(): Observable<Book> {
+    return this.http
+      .get<Book>(this.API_URL + 'books')
+      .pipe(retry(1), catchError(this.handleError));
   }
 
   addBook(book: Book) {
@@ -64,5 +58,18 @@ export class BooksService {
         b.authors = b.authors.filter((a) => a.id !== author.id);
       }
     });
+  }
+
+  handleError(error) {
+    let errorMessage = '';
+    if (error.error instanceof ErrorEvent) {
+      // Get client-side error
+      errorMessage = error.error.message;
+    } else {
+      // Get server-side error
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    window.alert(errorMessage);
+    return throwError(errorMessage);
   }
 }

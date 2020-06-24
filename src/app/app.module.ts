@@ -9,6 +9,7 @@ import { BooksComponent } from './books/books.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -26,7 +27,13 @@ import { DatePipe } from '@angular/common';
     AuthorEditorComponent,
     PageNotFoundComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule, NgbModule],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    AppRoutingModule,
+    FormsModule,
+    NgbModule,
+  ],
   providers: [BooksService, NgbModal, AuthorsService, DatePipe],
   bootstrap: [AppComponent],
 })
