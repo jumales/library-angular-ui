@@ -1,0 +1,39 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Login</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('CANCEL')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <span>Username</span>
+  <input
+    [(ngModel)]="loginData.username"
+    type="text"
+    placeholder="Type username ..."
+  />
+  <span>Password</span>
+  <input
+    [(ngModel)]="loginData.password"
+    type="password"
+    placeholder="Type your password ..."
+  />
+</div>
+
+<div class="buttons">
+  <button
+    class="ok-button"
+    (click)="passOk()"
+    type="submit"
+    class="btn btn-primary w-25 ok-button"
+  >
+    Ok
+  </button>
+  <button (click)="passCancel()" type="submit" class="btn btn-secondary w-25">
+    Cancel
+  </button>
+</div>

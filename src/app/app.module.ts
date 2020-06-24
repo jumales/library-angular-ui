@@ -1,3 +1,5 @@
+import { LoginService } from './login/login.service';
+import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './not-found/page-not-found.component';
 import { AuthorEditorComponent } from './authors/author-editor/author-editor.component';
 import { AuthorsComponent } from './authors/authors.component';
@@ -16,6 +18,7 @@ import { AppComponent } from './app.component';
 import { BookEditorComponent } from './books/book-editor/book-editor.component';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { StorageServiceModule } from 'ngx-webstorage-service';
 
 @NgModule({
   declarations: [
@@ -26,6 +29,7 @@ import { DatePipe } from '@angular/common';
     AuthorsComponent,
     AuthorEditorComponent,
     PageNotFoundComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -33,8 +37,9 @@ import { DatePipe } from '@angular/common';
     AppRoutingModule,
     FormsModule,
     NgbModule,
+    StorageServiceModule,
   ],
-  providers: [BooksService, NgbModal, AuthorsService, DatePipe],
+  providers: [BooksService, NgbModal, AuthorsService, DatePipe, LoginService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

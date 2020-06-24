@@ -27,6 +27,19 @@
       </li>
     </ul>
   </div>
+  <div>
+    <span>Logged as {{ loggedUser }}</span>
+    <div *ngIf="loggedUser === null">
+      <button (click)="showLogin()" type="submit" class="btn btn-primary">
+        Login
+      </button>
+    </div>
+    <div *ngIf="loggedUser !== null">
+      <button (click)="logout()" type="submit" class="btn btn-primary">
+        Logout
+      </button>
+    </div>
+  </div>
 </nav>
 
 <div class="container">
