@@ -116,7 +116,7 @@ export class AuthorsComponent {
           let author = result.author;
           author.dayOfBirth = Date.parse(author.dayOfBirthFormatted);
           this.authorsService.addAuthor(author).subscribe((result: any) => {
-            if (result.status.code === 200) {
+            if (result.status.code === 201) {
               this.getAuthors();
             } else {
               //do error handling
