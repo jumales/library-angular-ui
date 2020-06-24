@@ -1,3 +1,4 @@
+import { PageNotFoundComponent } from './not-found/page-not-found.component';
 import { AuthorEditorComponent } from './authors/author-editor/author-editor.component';
 import { AuthorsComponent } from './authors/authors.component';
 import { AuthorsService } from './authors/authors.service';
@@ -7,6 +8,7 @@ import { BooksService } from './books/books.service';
 import { BooksComponent } from './books/books.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -22,8 +24,9 @@ import { DatePipe } from '@angular/common';
     BookEditorComponent,
     AuthorsComponent,
     AuthorEditorComponent,
+    PageNotFoundComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule],
+  imports: [BrowserModule, AppRoutingModule, FormsModule, NgbModule],
   providers: [BooksService, NgbModal, AuthorsService, DatePipe],
   bootstrap: [AppComponent],
 })
